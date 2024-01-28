@@ -62,7 +62,7 @@ public class Principal {
 
         episodios.forEach(System.out::println);
 
-        System.out.println("Digite um trecho do título do episódio: ");
+        System.out.println("\nDigite um trecho do título do episódio: ");
         var trechoTitulo = leitura.nextLine();
 
         Optional<Episodio> episodioBuscado = episodios.stream()
@@ -91,5 +91,12 @@ public class Principal {
                                 " Episódio: " + e.getTitulo() +
                                 " Data lançamento: " + e.getDataLancamento().format(formatador)
                 ));
+
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvaliacao)));
+        System.out.println(avaliacoesPorTemporada);
+
     }
 }
