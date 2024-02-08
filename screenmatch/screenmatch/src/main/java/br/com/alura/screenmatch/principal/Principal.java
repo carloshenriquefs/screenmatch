@@ -29,6 +29,7 @@ public class Principal {
     public void exibeMenu() {
         var opcao = -1;
         while (opcao != 0) {
+            System.out.println("/n");
             var menu = """
                     1 - Buscar séries
                     2 - Buscar episódios
@@ -88,9 +89,7 @@ public class Principal {
     }
 
     private void listarSeriesBuscadas() {
-        List<Serie> series = new ArrayList<>();
-        series = dadosSeries.stream().map(d -> new Serie(d))
-                .collect(Collectors.toList());
+        List<Serie> series = serieRepository.findAll();
 
         series.stream().sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
