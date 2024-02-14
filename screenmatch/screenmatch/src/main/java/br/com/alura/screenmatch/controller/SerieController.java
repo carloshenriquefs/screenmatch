@@ -19,7 +19,7 @@ public class SerieController {
     public List<SerieDTO> obterSeries() {
         return serieRepository.findAll()
                 .stream()
-                .map(s -> new SerieDTO(s.getId(), s.getTitulo(),  s.getTotalTemporadas(),
+                .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(),
                         s.getAvaliacao(), s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
                 .collect(Collectors.toList());
     }
