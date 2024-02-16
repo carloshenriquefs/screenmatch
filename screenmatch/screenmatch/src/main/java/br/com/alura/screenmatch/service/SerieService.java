@@ -20,15 +20,15 @@ public class SerieService {
     private SerieRepository serieRepository;
 
     public List<SerieDTO> obterTodasAsSeries() {
-        return converterDadosSerie(serieRepository.findAll());
+        return converterDadosSerieDTO(serieRepository.findAll());
     }
 
     public List<SerieDTO> obterTop5Series() {
-        return converterDadosSerie(serieRepository.findTop5ByOrderByAvaliacaoDesc());
+        return converterDadosSerieDTO(serieRepository.findTop5ByOrderByAvaliacaoDesc());
     }
 
     public List<SerieDTO> obterLancamentos() {
-        return converterDadosSerie(serieRepository.lancamentosMaisRecentes());
+        return converterDadosSerieDTO(serieRepository.lancamentosMaisRecentes());
     }
 
     public SerieDTO obterPorId(Long id) {
@@ -54,24 +54,29 @@ public class SerieService {
     }
 
     public List<EpisodioDTO> obterTemporadasPorNumero(Long id, Long numero) {
-        return converterDadosEpisodio(serieRepository.obterEpisodiosPorTemporada(id, numero));
+        return converterDadosEpisodioDTO(serieRepository.obterEpisodiosPorTemporada(id, numero));
     }
 
-    private List<SerieDTO> converterDadosSerie(List<Serie> series) {
+    public List<SerieDTO> obterSeriesPorCategoria(String nomeGenero) {
+        Categoria categoria = Categoria.fromPortugues(nomeGenero);
+        return converterDadosSerieDTO(serieRepository.findByGenero(categoria));
+    }
+
+    public List<EpisodioDTO> obterTop5EpisodiosPorSerie(Long id) {
+        var serie = serieRepository.findById(id).get();
+        return converterDadosEpisodioDTO(serieRepository.topEpisodiosPorSerie(serie));
+    }
+
+    private List<SerieDTO> converterDadosSerieDTO(List<Serie> series) {
         return series.stream()
                 .map(s -> new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(),
                         s.getAvaliacao(), s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse()))
                 .collect(Collectors.toList());
     }
 
-    private List<EpisodioDTO> converterDadosEpisodio(List<Episodio> episodios) {
+    private List<EpisodioDTO> converterDadosEpisodioDTO(List<Episodio> episodios) {
         return episodios.stream()
                 .map(e -> new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio()))
                 .collect(Collectors.toList());
-    }
-
-    public List<SerieDTO> obterSeriesPorCategoria(String nomeGenero) {
-        Categoria categoria = Categoria.fromPortugues(nomeGenero);
-        return converterDadosSerie(serieRepository.findByGenero(categoria));
     }
 }
